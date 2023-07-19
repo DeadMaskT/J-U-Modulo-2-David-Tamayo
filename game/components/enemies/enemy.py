@@ -8,8 +8,8 @@ from game.utils.constants import (
     ENEMY_2,
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
-    SPACESHIP_HEIGHT,
-    SPACESHIP_WIDTH,
+    ENEMY_HEIGHT,
+    ENEMY_WIDTH,
 )
 
 
@@ -23,12 +23,10 @@ class Enemy(Sprite):
 
     def __init__(self):
         self.img = self.IMG_ENEMY[random.randint(0, 1)]
-        self.enemy_width = SPACESHIP_WIDTH
-        self.enemy_height = SPACESHIP_HEIGHT
-        self.spaceship_width = SPACESHIP_WIDTH
-        self.spaceship_height = SPACESHIP_HEIGHT
+        self.enemy_width = ENEMY_WIDTH
+        self.enemy_height = ENEMY_HEIGHT
         self.img = pygame.transform.scale(
-            self.img, (self.spaceship_width, self.spaceship_height)
+            self.img, (self.enemy_width, self.enemy_height)
         )
         self.rect = self.img.get_rect()
         self.rect.x = self.X_POS[random.randint(0, len(self.X_POS) - 1)]
@@ -61,7 +59,7 @@ class Enemy(Sprite):
     def change_movement(self):
         self.index += 1
         if (self.index >= self.move_x_for and self.movement_x == "right") or (
-            self.rect.x >= SCREEN_WIDTH - self.spaceship_width
+            self.rect.x >= SCREEN_WIDTH - self.enemy_width
         ):
             self.movement_x_for = random.randint(20, 90)
             self.movement_x = "left"

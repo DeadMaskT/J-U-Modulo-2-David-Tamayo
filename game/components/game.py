@@ -1,6 +1,8 @@
 import pygame
-from game.components.enemies.enemy_manager import Enemy_manager
 from game.components.bullets.bullets_manager import Bullets_manager
+from game.components.enemies.enemy_manager import Enemy_manager
+from game.components.layout import Layout
+from game.components.menu import Menu
 from game.components.spaceship import Spaceship
 
 from game.utils.constants import (
@@ -22,12 +24,25 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.playing = False
+        self.running = False
         self.game_speed = 10
         self.x_pos_bg = 0
         self.y_pos_bg = 0
         self.player = Spaceship()
         self.enemy_manager = Enemy_manager()
         self.bullet_manager = Bullets_manager()
+        self.death_score = 0
+        self.score = 0
+        self.menu = Menu("Press Any Key to start.....", self.screen)
+        self.layout = Layout()
+
+    def execute(self):
+        self.running = True
+        while self.running:
+            if not self.playing:
+                self.show_menu()
+        pygame.display.quit()
+        pygame.quit()
 
     def run(self):
         # Game loop: events - update - draw
@@ -49,6 +64,7 @@ class Game:
         self.player.update(user_input, self)
         self.enemy_manager.update(self)
         self.bullet_manager.update(self)
+        self.layout.update(self.score)
 
     def draw(self):
         self.clock.tick(FPS)
@@ -57,6 +73,7 @@ class Game:
         self.player.draw(self.screen)
         self.enemy_manager.draw(self.screen)
         self.bullet_manager.draw(self.screen)
+        self.layout.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -69,3 +86,22 @@ class Game:
             self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg - image_height))
             self.y_pos_bg = 0
         self.y_pos_bg += self.game_speed
+
+    def show_menu(self):
+        half_screen_height = SCREEN_HEIGHT // 2
+        half_screen_width = SCREEN_WIDTH // 2
+        self.menu.reset_screen_color(self.screen)
+
+        if self.death_score > 0:
+            self.menu.update_message("La tarea")
+            self.menu.draw(self.screen)
+        icon = pygame.transform.scale(ICON, (80, 120))
+        self.screen.blit(icon, (half_screen_width, half_screen_height))
+        self.menu.draw(self.screen)
+        self.menu.update(self)
+
+    def update_score(self):
+        self.score += 1
+
+    def draw_score(self):
+        pass
