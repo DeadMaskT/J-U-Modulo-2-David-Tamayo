@@ -1,5 +1,7 @@
 import pygame
 
+from game.utils.constants import SHIELD_TYPE
+
 
 class Bullets_manager:
     def __init__(self):
@@ -25,11 +27,13 @@ class Bullets_manager:
                 and bullet_enemy.owner == "enemy"
             ):
                 self.enemy_bullets.remove(bullet_enemy)
-                game.death_score += 1
-                pygame.time.delay(1000)
-                game.playing = False
-                game.running = False
-                break
+                if game.player.power_up_type != SHIELD_TYPE:
+                    game.num_hearts -= 1
+                    if game.num_hearts == 0:
+                        game.playing = False
+                        game.death_score += 1
+                        pygame.time.delay(1000)
+                        break
 
     def draw(self, screen):
         for bullet_enemy in self.enemy_bullets:
